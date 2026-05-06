@@ -11,7 +11,6 @@ export const ActionSchema = new schema.Entity("actions");
 export const QuestionSchema = new schema.Entity("questions");
 export const CacheConfigSchema = new schema.Entity("cacheConfigs");
 export const BookmarkSchema = new schema.Entity("bookmarks");
-export const DocumentSchema = new schema.Entity("documents");
 export const DashboardSchema = new schema.Entity("dashboards");
 export const CollectionSchema = new schema.Entity("collections");
 export const GroupSchema = new schema.Entity("groups");
@@ -137,7 +136,6 @@ export const ENTITIES_SCHEMA_MAP = {
   metrics: MetricSchema,
   snippets: SnippetSchema,
   snippetCollections: SnippetCollectionSchema,
-  documents: DocumentSchema,
 };
 
 export const ObjectUnionSchema = new schema.Union(
