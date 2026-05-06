@@ -86,7 +86,6 @@ export { Metrics as metrics } from "./metrics";
 export { Groups as groups } from "./groups";
 
 export { Search as search } from "./search";
-export { PersistedModels as persistedModels } from "./persisted-models";
 export { Snippets as snippets } from "./snippets";
 
 export { entityCompatibleQuery, combineEntities } from "./utils";
