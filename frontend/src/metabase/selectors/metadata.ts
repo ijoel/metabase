@@ -7,7 +7,6 @@ import Question from "metabase-lib/v1/Question";
 import Database from "metabase-lib/v1/metadata/Database";
 import Field from "metabase-lib/v1/metadata/Field";
 import ForeignKey from "metabase-lib/v1/metadata/ForeignKey";
-import Measure from "metabase-lib/v1/metadata/Measure";
 import Metadata from "metabase-lib/v1/metadata/Metadata";
 import Schema from "metabase-lib/v1/metadata/Schema";
 import Table from "metabase-lib/v1/metadata/Table";
@@ -18,7 +17,9 @@ import {
 } from "metabase-lib/v1/queries/utils/field";
 import type {
   Collection as ApiCollection,
+  Table as ApiTable,
   Card,
+  Measure,
   Metric,
   NormalizedCollection,
   NormalizedDatabase,
@@ -153,7 +154,7 @@ export const getMetadata: (
       Object.values(segments).map((s) => [s.id, createSegment(s)]),
     );
     metadata.measures = Object.fromEntries(
-      Object.values(measures).map((m) => [m.id, createMeasure(m, metadata)]),
+      Object.values(measures).map((m) => [m.id, createMeasure(m)]),
     );
     metadata.metrics = Object.fromEntries(
       Object.values(metrics).map((m) => [m.id, createMetric(m)]),
@@ -187,7 +188,7 @@ export const getMetadata: (
       schema.tables = hydrateSchemaTables(schema, metadata);
     });
     Object.values(metadata.measures).forEach((measure) => {
-      measure.table = hydrateMeasureTable(measure, metadata);
+      measure.table = hydrateMeasureTable(measure, tables);
     });
     Object.values(metadata.metrics).forEach((metric) => {
       metric.collection = hydrateMetricCollection(metric, collections);
@@ -269,13 +270,9 @@ function createSegment(segment: NormalizedSegment): Segment {
   return rest;
 }
 
-function createMeasure(
-  measure: NormalizedMeasure,
-  metadata: Metadata,
-): Measure {
-  const instance = new Measure(measure);
-  instance.metadata = metadata;
-  return instance;
+function createMeasure(measure: NormalizedMeasure): Measure {
+  const { table: _normalizedTableId, ...rest } = measure;
+  return rest;
 }
 
 function createMetric(metric: NormalizedMetric): Metric {
@@ -430,9 +427,25 @@ function hydrateNameField(field: Field, metadata: Metadata): Field | undefined {
 
 function hydrateMeasureTable(
   measure: Measure,
-  metadata: Metadata,
-): Table | undefined {
-  return metadata.table(measure.table_id) ?? undefined;
+  tables: Record<string, NormalizedTable>,
+): ApiTable | undefined {
+  const normalized = tables[measure.table_id];
+  if (!normalized) {
+    return undefined;
+  }
+  const {
+    db: _db,
+    fields: _fields,
+    fks: _fks,
+    segments: _segments,
+    measures: _measures,
+    metrics: _metrics,
+    schema: _schema,
+    schema_name,
+    original_fields: _original_fields,
+    ...rest
+  } = normalized;
+  return { ...rest, schema: schema_name ?? "" };
 }
 
 function hydrateMetricCollection(

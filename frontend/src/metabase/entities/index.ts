@@ -78,6 +78,5 @@ export { Databases as databases } from "./databases";
 export { Schemas as schemas } from "./schemas";
 export { Tables as tables } from "./tables";
 export { Fields as fields } from "./fields";
-export { Measures as measures } from "./measures";
 
 export { Snippets as snippets } from "./snippets";
