@@ -74,7 +74,6 @@ export { Dashboards as dashboards } from "./dashboards";
 export { Questions as questions } from "./questions";
 
 export { Databases as databases } from "./databases";
-export { Schemas as schemas } from "./schemas";
 export { Tables as tables } from "./tables";
 export { Fields as fields } from "./fields";
 
